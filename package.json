@@ -1,0 +1,16 @@
+{
+  "name": "node-crypto",
+  "version": "1.0.0",
+  "homepage": "http://thethingbox.io/",
+  "private": true,
+  "dependencies": {
+  	"mqtt": "2.16.0",
+  	"uuid": "3.2.1"
+  },
+  "contributors": [{
+    "name": "Digital Airaways"
+  }],
+  "engines": {
+    "node": ">=6"
+  }
+}
