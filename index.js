@@ -18,11 +18,9 @@ const defaultOption = {
   key_path: '/root/certs',
   private_key: (isTheThingBox() === true)?ttb_private_key_name:null,
   public_key: (isTheThingBox() === true)?ttb_public_key_name:null,
-  hydra_exec: {
-    base_topic: 'hydra_exec',
-    host: 'localhost',
-    port: 1883
-  }
+  hydra_exec_base_topic: 'hydra_exec',
+  hydra_exec_host: 'localhost',
+  hydra_exec_port: 1883
 }
 
 function run(cmd, option, callback){
@@ -49,13 +47,11 @@ function run(cmd, option, callback){
   if(option === undefined || option === null) {
     option = {}
   }
-  option = Object.assign(option, defaultOption)
+  option = Object.assign({}, defaultOption, option)
   if(option.private_key === undefined || option.private_key === null || option.public_key === undefined || option.public_key === null) {
     console.error(`option error: missing rsa key`)
     return
   }
-
-  var client  = mqtt.connect('mqtt://test.mosquitto.org')
 
   var payload = JSON.stringify({cmd})
   payload = payload.replace(/"/g, '\"')
@@ -86,11 +82,11 @@ function run(cmd, option, callback){
       console.log(`crypto error: ${stderr}`)
       return
     } else {
-      var client = mqtt.connect(`mqtt://${option.hydra_exec.host}:${option.hydra_exec.port}`)
+      var client = mqtt.connect(`mqtt://${option.hydra_exec_host}:${option.hydra_exec_port}`)
       var id = uuid()
       client.on('connect', function () {
-        client.subscribe(`${option.hydra_exec.base_topic}/out`)
-        client.publish(`${option.hydra_exec.base_topic}/in`, JSON.stringify({
+        client.subscribe(`${option.hydra_exec_base_topic}/out`)
+        client.publish(`${option.hydra_exec_base_topic}/in`, JSON.stringify({
           id,
           type,
           keyname: option.public_key,
