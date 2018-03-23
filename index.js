@@ -20,7 +20,8 @@ const defaultOption = {
   public_key: (isTheThingBox() === true)?ttb_public_key_name:null,
   hydra_exec_base_topic: 'hydra_exec',
   hydra_exec_host: 'localhost',
-  hydra_exec_port: 1883
+  hydra_exec_port: 1883,
+  type: 'cmd'
 }
 
 function run(cmd, option, callback){
@@ -71,7 +72,6 @@ function run(cmd, option, callback){
   var sout
   var serr
   var serror
-  var type = 'cmd'
 
   execFile(option.ttb_crypto, cmdEncrypt, opt, (error, stdout, stderr) => {
     if (error) {
@@ -88,7 +88,7 @@ function run(cmd, option, callback){
         client.subscribe(`${option.hydra_exec_base_topic}/out`)
         client.publish(`${option.hydra_exec_base_topic}/in`, JSON.stringify({
           id,
-          type,
+          type: option.type,
           keyname: option.public_key,
           payload: stdout
         }))
