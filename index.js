@@ -54,8 +54,9 @@ function run(cmd, option, callback){
     return
   }
 
-  var payload = JSON.stringify({cmd})
-  payload = payload.replace(/"/g, '\"')
+  var payload = {}
+  payload[option.type] = cmd
+  payload = JSON.stringify(payload).replace(/"/g, '\"')
 
   var cmdEncrypt = ['-action=encrypt', `-algo=${option.algo}`, `-private_key=${path.join(option.key_path, option.private_key)}`, `-public_key=${path.join(option.key_path, option.public_key)}`, `-text=${payload}`]
   var cmdDecrypt = ['-action=decrypt', `-algo=${option.algo}`, `-private_key=${path.join(option.key_path, option.private_key)}`, `-public_key=${path.join(option.key_path, option.public_key)}`]
