@@ -12,6 +12,11 @@ function isTheThingBox(){
   return fs.existsSync(path.join(ttb_key_path, ttb_private_key_name)) && fs.existsSync(path.join(ttb_key_path, ttb_public_key_name))
 }
 
+function isObject(val) {
+  if (val === null) { return false;}
+  return ( (typeof val === 'function') || (typeof val === 'object') );
+}
+
 const defaultOption = {
   ttb_crypto: path.join(__dirname, 'bin', 'ttb-crypto'),
   algo: 'aes-256-gcm',
@@ -53,10 +58,14 @@ function run(cmd, option, callback){
     console.error(`option error: missing rsa key`)
     return
   }
+  
+  if(!isObject(cmd)){
+    let tmpCmd = cmd
+    cmd = {}
+    cmd[option.type] = tmpCmd
+  }
 
-  var payload = {}
-  payload[option.type] = cmd
-  payload = JSON.stringify(payload).replace(/"/g, '\"')
+  var payload = JSON.stringify(cmd).replace(/"/g, '\"')
 
   var cmdEncrypt = ['-action=encrypt', `-algo=${option.algo}`, `-private_key=${path.join(option.key_path, option.private_key)}`, `-public_key=${path.join(option.key_path, option.public_key)}`, `-text=${payload}`]
   var cmdDecrypt = ['-action=decrypt', `-algo=${option.algo}`, `-private_key=${path.join(option.key_path, option.private_key)}`, `-public_key=${path.join(option.key_path, option.public_key)}`]
