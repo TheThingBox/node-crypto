@@ -17,16 +17,18 @@ function isObject(val) {
   return ( (typeof val === 'function') || (typeof val === 'object') );
 }
 
-const defaultOption = {
-  ttb_crypto: path.join(__dirname, 'bin', 'ttb-crypto'),
-  algo: 'aes-256-gcm',
-  key_path: '/root/certs',
-  private_key: (isTheThingBox() === true)?ttb_private_key_name:null,
-  public_key: (isTheThingBox() === true)?ttb_public_key_name:null,
-  hydra_exec_base_topic: 'hydra_exec',
-  hydra_exec_host: 'localhost',
-  hydra_exec_port: 1883,
-  type: 'cmd'
+function getDefaultOptions() {
+  return {
+    ttb_crypto: path.join(__dirname, 'bin', 'ttb-crypto'),
+    algo: 'aes-256-gcm',
+    key_path: '/root/certs',
+    private_key: (isTheThingBox() === true)?ttb_private_key_name:null,
+    public_key: (isTheThingBox() === true)?ttb_public_key_name:null,
+    hydra_exec_base_topic: 'hydra_exec',
+    hydra_exec_host: 'localhost',
+    hydra_exec_port: 1883,
+    type: 'cmd'
+  }
 }
 
 function run(cmd, option, callback){
@@ -53,7 +55,7 @@ function run(cmd, option, callback){
   if(option === undefined || option === null) {
     option = {}
   }
-  option = Object.assign({}, defaultOption, option)
+  option = Object.assign({}, getDefaultOptions(), option)
   if(option.private_key === undefined || option.private_key === null || option.public_key === undefined || option.public_key === null) {
     console.error(`option error: missing rsa key`)
     return
